@@ -148,9 +148,7 @@ describe('النطاقات المكتوبة بلا بروتوكول', () => {
   });
 
   it('يتعرف على نطاق مع مسار', () => {
-    expect(extractUrls('شوف example.com/blog/post-1')).toEqual([
-      'https://example.com/blog/post-1',
-    ]);
+    expect(extractUrls('شوف example.com/blog/post-1')).toEqual(['https://example.com/blog/post-1']);
   });
 
   it('لا يكرر الرابط الملتقط بالبروتوكول', () => {

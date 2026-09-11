@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { hashPassword, verifyPassword, createSessionToken, readSessionToken } from '@/lib/auth';
+import { resetEnvCache } from '@/lib/env';
 
 describe('كلمات المرور', () => {
   it('لا تُخزَّن كنص صريح ويمكن التحقق منها', async () => {
@@ -24,5 +25,46 @@ describe('جلسات JWT', () => {
     const tampered = `${token.slice(0, -3)}abc`;
     expect(await readSessionToken(tampered)).toBeNull();
     expect(await readSessionToken('not-a-token')).toBeNull();
+  });
+});
+
+describe('رفض المفاتيح الضعيفة', () => {
+  const original = process.env.AUTH_SECRET;
+
+  afterEach(() => {
+    process.env.AUTH_SECRET = original;
+    resetEnvCache();
+  });
+
+  it('يرفض القيمة التوضيحية المنسوخة من env.example', async () => {
+    process.env.AUTH_SECRET = 'ضع-هنا-مفتاحاً-عشوائياً-طوله-32-حرفاً-على-الأقل';
+    resetEnvCache();
+    await expect(createSessionToken({ id: 'u1', email: 'a@b.co', name: 'x' })).rejects.toThrow(
+      /القيمة التوضيحية/,
+    );
+  });
+
+  it('يرفض المفتاح القصير', async () => {
+    process.env.AUTH_SECRET = 'short';
+    resetEnvCache();
+    await expect(createSessionToken({ id: 'u1', email: 'a@b.co', name: 'x' })).rejects.toThrow(
+      /32 حرفاً/,
+    );
+  });
+
+  it('يرفض المفتاح منخفض التنوّع مهما طال', async () => {
+    process.env.AUTH_SECRET = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    resetEnvCache();
+    await expect(createSessionToken({ id: 'u1', email: 'a@b.co', name: 'x' })).rejects.toThrow(
+      /ضعيف/,
+    );
+  });
+
+  it('يقبل مفتاحاً عشوائياً حقيقياً', async () => {
+    process.env.AUTH_SECRET = 'pS+BWq3Zk9Lx7NcR2hVtYuE4mJgD8sAfQbOwXi1TlKn5Cz0PdMrGeH6vUyIa';
+    resetEnvCache();
+    await expect(createSessionToken({ id: 'u1', email: 'a@b.co', name: 'x' })).resolves.toBeTypeOf(
+      'string',
+    );
   });
 });

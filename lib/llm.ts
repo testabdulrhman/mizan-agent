@@ -311,7 +311,9 @@ export class MockProvider implements LlmProvider {
     if (firstUrl && request.tools.some((t) => t.name === 'read_public_url')) {
       return {
         text: '',
-        toolCalls: [{ id: `mock_${Date.now()}`, name: 'read_public_url', input: { url: firstUrl } }],
+        toolCalls: [
+          { id: `mock_${Date.now()}`, name: 'read_public_url', input: { url: firstUrl } },
+        ],
         stopReason: 'tool_use',
       };
     }

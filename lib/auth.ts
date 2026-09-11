@@ -19,11 +19,33 @@ export type SessionUser = {
   name: string;
 };
 
+/**
+ * قيم معروفة للعامة يجب رفضها: نسخ .env.example كما هو يترك مفتاحاً
+ * يعرفه أي شخص، وطوله يتجاوز 32 حرفاً فيمرّ من فحص الطول بصمت.
+ */
+const FORBIDDEN_SECRETS = [
+  'ضع-هنا-مفتاحاً-عشوائياً-طوله-32-حرفاً-على-الأقل',
+  'mizan-development-secret-change-me-please-32',
+  'change-me',
+  'your-secret-here',
+];
+
 function secretKey(): Uint8Array {
-  const secret = env().AUTH_SECRET;
+  const secret = env().AUTH_SECRET.trim();
+
   if (secret.length < 32) {
     throw new Error('AUTH_SECRET يجب أن يكون 32 حرفاً على الأقل.');
   }
+  if (FORBIDDEN_SECRETS.some((v) => secret === v || secret.includes(v))) {
+    throw new Error(
+      'AUTH_SECRET ما زال القيمة التوضيحية من .env.example. ولّد مفتاحاً حقيقياً بـ: openssl rand -base64 48',
+    );
+  }
+  // مفتاح من محرف واحد مكرر أو من كلمة واحدة مكررة ليس عشوائياً.
+  if (new Set(secret).size < 12) {
+    throw new Error('AUTH_SECRET ضعيف جداً (تنوّع محارف منخفض). ولّده بـ: openssl rand -base64 48');
+  }
+
   return new TextEncoder().encode(secret);
 }
 

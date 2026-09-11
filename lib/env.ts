@@ -33,6 +33,7 @@ const schema = z.object({
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_MODEL: z.string().default('gpt-4.1'),
   OPENAI_BASE_URL: z.string().default('https://api.openai.com/v1'),
+  OPENROUTER_API_KEY: z.string().optional(),
 
   WEB_READ_TIMEOUT_MS: intish(12_000),
   WEB_READ_MAX_BYTES: intish(2_500_000),

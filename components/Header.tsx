@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import type { SessionUserView } from '@/lib/types';
 
 /* رأس بسيط: اسم التطبيق + محادثة جديدة + سجل + الحساب. بلا تبويبات وبلا شريط جانبي. */
@@ -59,6 +60,14 @@ export default function Header({
           >
             🕘
           </button>
+
+          <Link
+            href="/office"
+            className="rounded-xl px-2.5 py-2 text-[13px] font-medium text-brand-600 transition hover:bg-canvas-soft"
+            title="إدارة المكتب"
+          >
+            إدارة المكتب
+          </Link>
 
           <button
             type="button"

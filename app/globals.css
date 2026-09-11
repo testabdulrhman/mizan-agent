@@ -132,3 +132,34 @@
     background: transparent;
   }
 }
+
+/* إدارة المكتب — هوية داكنة راقية بالبحري والذهبي */
+.office-shell { font-family: var(--font-app); }
+.office-topbar { background: rgba(7, 17, 31, 0.92); backdrop-filter: blur(18px); }
+.office-mark { display: flex; height: 34px; width: 34px; align-items: center; justify-content: center; border: 1px solid rgba(216,173,98,.4); border-radius: 11px; background: linear-gradient(145deg,#d8ad62,#9b7134); color: #07111f; font-weight: 800; }
+.office-icon-btn { display: inline-flex; height: 34px; width: 34px; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.1); border-radius: 11px; color: rgba(255,255,255,.6); transition: .2s; }
+.office-icon-btn:hover { border-color: rgba(216,173,98,.5); color: #e6c37e; background: rgba(216,173,98,.08); }
+.office-nav-item { display: flex; width: 100%; align-items: center; gap: 10px; border: 1px solid transparent; border-radius: 14px; padding: 10px; color: rgba(255,255,255,.62); text-align: start; transition: .2s; }
+.office-nav-item:hover { background: rgba(255,255,255,.05); color: white; }
+.office-nav-item.is-active { border-color: rgba(216,173,98,.23); background: linear-gradient(100deg,rgba(216,173,98,.13),rgba(255,255,255,.03)); color: white; }
+.office-nav-icon, .office-large-icon { display: flex; align-items: center; justify-content: center; border-radius: 11px; }
+.office-nav-icon { height: 32px; width: 32px; flex: 0 0 auto; font-size: 15px; }
+.office-large-icon { height: 48px; width: 48px; font-size: 22px; }
+.office-nav-icon.gold, .office-large-icon.gold { background: rgba(216,173,98,.15); color: #e6c37e; }
+.office-nav-icon.blue, .office-large-icon.blue { background: rgba(91,145,205,.16); color: #8fc2f0; }
+.office-nav-icon.rose, .office-large-icon.rose { background: rgba(211,108,125,.15); color: #e9a3b1; }
+.office-nav-icon.teal, .office-large-icon.teal { background: rgba(74,173,166,.15); color: #8bd4ce; }
+.office-nav-icon.amber, .office-large-icon.amber { background: rgba(222,144,67,.15); color: #f0b875; }
+.office-nav-icon.violet, .office-large-icon.violet { background: rgba(149,116,211,.15); color: #c4a9f0; }
+.office-title { letter-spacing: -.04em; background: linear-gradient(120deg,#fff 20%,#d8ad62 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.office-hero-card { background: radial-gradient(circle at 78% 0%,rgba(216,173,98,.13),transparent 32%), linear-gradient(145deg,rgba(22,40,63,.9),rgba(11,25,43,.92)); box-shadow: 0 24px 80px rgba(0,0,0,.2); }
+.office-textarea { min-height: 140px; resize: vertical; border: 1px solid rgba(255,255,255,.1); border-radius: 16px; background: rgba(4,12,23,.45); padding: 14px; color: white; font-size: 13px; line-height: 1.8; outline: none; transition: .2s; }
+.office-textarea::placeholder { color: rgba(255,255,255,.25); }
+.office-textarea:focus { border-color: rgba(216,173,98,.65); box-shadow: 0 0 0 3px rgba(216,173,98,.08); }
+.office-gold-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 12px; background: linear-gradient(120deg,#d8ad62,#b9853e); padding: 11px 17px; color: #07111f; font-size: 12px; font-weight: 700; transition: .2s; }
+.office-gold-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.office-gold-btn:disabled { cursor: not-allowed; opacity: .45; transform: none; }
+.office-outline-btn { border: 1px solid rgba(216,173,98,.35); border-radius: 12px; padding: 11px 15px; color: #e6c37e; font-size: 12px; }
+.office-result { background: linear-gradient(145deg,rgba(19,35,55,.96),rgba(9,20,35,.98)); }
+.office-prose { color: rgba(255,255,255,.76); font-size: 14px; line-height: 2; }
+@media print { .office-topbar, aside, .office-result > div:last-child { display: none !important; } .office-shell, .office-result { background: white !important; color: #111 !important; } .office-prose { color: #111 !important; } }

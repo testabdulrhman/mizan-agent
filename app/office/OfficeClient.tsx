@@ -1,126 +1,54 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
+import { useState } from 'react';
 
-type Style = 'formal' | 'premium' | 'brief';
-
-const styles: { id: Style; title: string; description: string }[] = [
-  { id: 'formal', title: 'رسمي وقانوني', description: 'صياغة رسمية مناسبة للجهات والعملاء القانونيين' },
-  { id: 'premium', title: 'فاخر واستشاري', description: 'مقترح قيمة يبرز الحل والمخرجات والأثر' },
-  { id: 'brief', title: 'مختصر ومباشر', description: 'عرض سريع وواضح للعميل' },
+type Module = { id: string; label: string; description: string; icon: string; accent: string; prompt: string };
+const modules: Module[] = [
+  { id: 'profile', label: 'الملف التعريفي', description: 'صغ هوية المكتب ونبذته وخدماته', icon: '✦', accent: 'gold', prompt: 'أنشئ ملفًا تعريفيًا احترافيًا للمكتب اعتمادًا على بياناته الحالية.' },
+  { id: 'strategy', label: 'التخطيط الاستراتيجي', description: 'الرؤية والأهداف وخطة النمو', icon: '◈', accent: 'blue', prompt: 'ضع خطة استراتيجية عملية للمكتب تشمل الرؤية والأهداف ومؤشرات القياس.' },
+  { id: 'marketing', label: 'الخطة التسويقية', description: 'جذب العملاء وبناء الحضور', icon: '◎', accent: 'rose', prompt: 'أنشئ خطة تسويقية متكاملة للمكتب في السعودية مع القنوات والأولويات.' },
+  { id: 'content', label: 'المحتوى والموقع', description: 'صفحات الموقع وخطة النشر', icon: '⌘', accent: 'teal', prompt: 'اكتب هيكل موقع المكتب ونصوص الصفحات الأساسية مع خطة محتوى شهرية.' },
+  { id: 'quotes', label: 'عروض الأسعار', description: 'نطاق عمل وعرض احترافي للعميل', icon: '▤', accent: 'amber', prompt: '' },
+  { id: 'growth', label: 'خطة النمو', description: 'الخدمات والفرص والتوسع', icon: '↗', accent: 'violet', prompt: 'حلل فرص نمو المكتب واقترح خدمات جديدة وشراكات وخطة توسع.' },
 ];
+const officeContext = 'شركة عبدالرحمن بن رضوان المشيقح للمحاماة وإدارة إجراءات الإفلاس — أعمال المحاماة والتوثيق والإفلاس والتسجيل العيني — القصيم، بريدة — المملكة العربية السعودية.';
 
-const initialForm = {
-  clientName: '',
-  clientActivity: '',
-  request: '',
-  scope: '',
-  duration: '',
-  budget: '',
-  payment: '',
-  exclusions: '',
-};
-
-export default function OfficePage() {
-  const [style, setStyle] = useState<Style>('formal');
-  const [form, setForm] = useState(initialForm);
+export default function OfficeClient() {
+  const [active, setActive] = useState('quotes');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [request, setRequest] = useState('');
   const [result, setResult] = useState('');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-
-  function update(key: keyof typeof initialForm, value: string) {
-    setForm((current) => ({ ...current, [key]: value }));
-  }
+  const selected = modules.find((item) => item.id === active) ?? modules[4];
 
   async function generate() {
-    setBusy(true);
-    setError('');
-    setResult('');
+    if (!request.trim()) return;
+    setBusy(true); setResult('');
     try {
-      const response = await fetch('/api/office/quote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ style, ...form }),
-      });
+      const endpoint = active === 'quotes' ? '/api/office/quote' : '/api/office/plan';
+      const body = active === 'quotes'
+        ? { style: 'premium', clientName: 'يحتاج إدخال اسم العميل', request, clientActivity: '', scope: '', duration: '', budget: '', payment: '', exclusions: '' }
+        : { module: active, request, officeContext };
+      const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error ?? 'تعذّر إنشاء العرض.');
+      if (!response.ok) throw new Error(data.error ?? 'تعذر إنشاء المخرج.');
       setResult(data.content);
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'تعذّر إنشاء العرض.');
-    } finally {
-      setBusy(false);
-    }
+    } catch (error) { setResult(`تعذر إنشاء المخرج: ${error instanceof Error ? error.message : 'خطأ غير معروف'}`); }
+    finally { setBusy(false); }
   }
 
-  return (
-    <main className="min-h-[100dvh] bg-canvas px-3 py-5 text-ink sm:px-6">
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-6 flex items-center justify-between gap-3">
-          <div>
-            <Link href="/" className="text-xs text-brand-600 hover:underline">← العودة للمحادثة</Link>
-            <h1 className="mt-2 text-2xl font-bold">إدارة المكتب</h1>
-            <p className="mt-1 text-sm text-ink-muted">إنشاء عروض أسعار ومقترحات عملاء بصياغة احترافية.</p>
-          </div>
-          <div className="hidden rounded-2xl bg-brand-500 px-4 py-3 text-center text-white sm:block">
-            <div className="text-lg font-bold">م</div>
-            <div className="text-[10px]">مِيزان</div>
-          </div>
-        </div>
-
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-          <section className="mizan-card p-4 sm:p-5">
-            <h2 className="text-base font-bold">بيانات عرض السعر</h2>
-            <p className="mt-1 text-xs leading-5 text-ink-muted">أدخل ما تعرفه، وسيقترح Fusion نطاق العمل والمخرجات والأسئلة الناقصة.</p>
-
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <Field label="اسم العميل" value={form.clientName} onChange={(v) => update('clientName', v)} placeholder="مثال: شركة ..." />
-              <Field label="نشاط العميل" value={form.clientActivity} onChange={(v) => update('clientActivity', v)} placeholder="مثال: مقاولات" />
-            </div>
-            <TextField label="طلب العميل أو الهدف" value={form.request} onChange={(v) => update('request', v)} placeholder="ماذا يريد العميل تحديدًا؟" />
-            <TextField label="نطاق العمل المبدئي" value={form.scope} onChange={(v) => update('scope', v)} placeholder="اكتب النقاط التي اتفقتم عليها، إن وجدت" />
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="المدة المتوقعة" value={form.duration} onChange={(v) => update('duration', v)} placeholder="مثال: 30 يومًا" />
-              <Field label="الميزانية أو الأتعاب" value={form.budget} onChange={(v) => update('budget', v)} placeholder="مثال: 25,000 ريال" />
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="شروط الدفع" value={form.payment} onChange={(v) => update('payment', v)} placeholder="مثال: 50% مقدمًا" />
-              <Field label="ما لا يشمله العرض" value={form.exclusions} onChange={(v) => update('exclusions', v)} placeholder="مثال: الرسوم الحكومية" />
-            </div>
-
-            <h2 className="mt-5 text-sm font-bold">أسلوب العرض</h2>
-            <div className="mt-2 grid gap-2">
-              {styles.map((item) => (
-                <button key={item.id} type="button" onClick={() => setStyle(item.id)} className={`rounded-xl border p-3 text-start transition ${style === item.id ? 'border-brand-500 bg-brand-50' : 'border-line bg-canvas-raised hover:bg-canvas-soft'}`}>
-                  <div className="flex items-center justify-between gap-2"><span className="text-sm font-semibold">{item.title}</span><span className="text-xs text-brand-600">{style === item.id ? 'مختار' : 'اختيار'}</span></div>
-                  <p className="mt-1 text-xs text-ink-muted">{item.description}</p>
-                </button>
-              ))}
-            </div>
-
-            <button type="button" onClick={generate} disabled={busy || !form.clientName || !form.request} className="mizan-btn-primary mt-5 w-full py-3">
-              {busy ? 'يحلّل المعطيات ويصيغ العرض…' : 'أنشئ عرض السعر عبر Fusion'}
-            </button>
-            {error && <p role="alert" className="mt-3 rounded-xl bg-danger-100 p-3 text-xs text-danger-600">{error}</p>}
-          </section>
-
-          <section className="mizan-card min-h-[520px] p-4 sm:p-5">
-            <div className="flex items-center justify-between gap-2 border-b border-line pb-3">
-              <div><h2 className="text-base font-bold">المعاينة</h2><p className="mt-1 text-xs text-ink-muted">سيظهر العرض هنا لتراجعه قبل التصدير.</p></div>
-              {result && <button type="button" onClick={() => window.print()} className="mizan-btn-ghost text-xs">طباعة / حفظ PDF</button>}
-            </div>
-            {result ? <article className="mizan-prose mt-5 whitespace-pre-wrap">{result}</article> : <div className="flex min-h-[420px] items-center justify-center text-center text-sm text-ink-faint"><div><div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-xl text-brand-600">▤</div><p>أدخل بيانات العميل ثم أنشئ العرض.</p><p className="mt-1 text-xs">يمكنك طباعة المعاينة أو حفظها PDF من المتصفح.</p></div></div>}
-          </section>
-        </div>
-      </div>
-    </main>
-  );
+  return <main className="office-shell min-h-[100dvh] bg-[#07111f] text-white" dir="rtl">
+    <header className="office-topbar flex h-[70px] items-center justify-between border-b border-white/10 px-4 sm:px-8">
+      <div className="flex items-center gap-4"><Link href="/" className="office-icon-btn" aria-label="العودة للمحادثة">←</Link><div className="flex items-center gap-3"><span className="office-mark">م</span><div><p className="text-sm font-bold tracking-wide">إدارة المكتب</p><p className="text-[11px] text-white/45">مساحة العمل الاستراتيجية</p></div></div></div>
+      <div className="relative"><button onClick={() => setMenuOpen((value) => !value)} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/70"><span className="h-2 w-2 rounded-full bg-[#d8ad62]" /> مكتب المشيقح <span className="text-white/35">⌄</span></button>{menuOpen && <div className="absolute left-0 top-12 z-20 w-56 rounded-2xl border border-white/10 bg-[#101d30] p-3 text-xs text-white/65 shadow-2xl"><p className="font-semibold text-white">شركة عبدالرحمن بن رضوان المشيقح</p><p className="mt-1 leading-5">محاماة وإدارة إجراءات الإفلاس</p></div>}</div>
+    </header>
+    <div className="mx-auto grid min-h-[calc(100dvh-70px)] max-w-[1440px] lg:grid-cols-[250px_minmax(0,1fr)]">
+      <aside className="hidden border-l border-white/10 p-5 lg:block"><p className="mb-4 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">مساحة المكتب</p><nav className="space-y-1.5">{modules.map((item) => <button key={item.id} onClick={() => { setActive(item.id); setResult(''); setRequest(item.prompt); }} className={`office-nav-item ${active === item.id ? 'is-active' : ''}`}><span className={`office-nav-icon ${item.accent}`}>{item.icon}</span><span className="min-w-0 text-start"><span className="block text-[12px] font-semibold">{item.label}</span><span className="mt-0.5 block truncate text-[10px] text-white/35">{item.description}</span></span></button>)}</nav><div className="mt-8 rounded-2xl border border-[#d8ad62]/20 bg-[#d8ad62]/[0.06] p-4"><p className="text-xs font-semibold text-[#e6c37e]">مستشار المكتب</p><p className="mt-2 text-[11px] leading-5 text-white/45">يستخدم Fusion في المهام الاستراتيجية، ويحوّل أفكارك إلى مخرجات قابلة للاستخدام.</p></div></aside>
+      <section className="px-4 py-6 sm:px-8 lg:px-12 lg:py-10"><div className="mx-auto max-w-5xl"><div className="mb-7 flex items-end justify-between gap-4"><div><p className="mb-2 text-[11px] font-medium tracking-[0.16em] text-[#d8ad62]">MIZAN / OFFICE OS</p><h1 className="office-title text-3xl font-semibold sm:text-4xl">ابنِ مكتبك بوضوح.</h1><p className="mt-3 max-w-xl text-sm leading-6 text-white/45">مساحة ذكية لتخطيط المكتب، صياغة مخرجاته، وتحويل القرارات الاستراتيجية إلى خطوات عملية.</p></div><div className="hidden text-left sm:block"><span className="text-[10px] text-white/30">اليوم</span><p className="mt-1 text-xs text-white/65">مساحة خاصة وآمنة</p></div></div>
+        <div className="mb-7 grid grid-cols-2 gap-2 lg:hidden sm:grid-cols-3">{modules.map((item) => <button key={item.id} onClick={() => { setActive(item.id); setResult(''); setRequest(item.prompt); }} className={`rounded-xl border px-3 py-3 text-start ${active === item.id ? 'border-[#d8ad62]/60 bg-[#d8ad62]/10' : 'border-white/10 bg-white/[0.03]'}`}><span className="text-sm">{item.icon}</span><span className="mt-1 block text-[11px] font-semibold">{item.label}</span></button>)}</div>
+        {!result ? <><div className="office-hero-card mb-6 rounded-[26px] border border-white/10 p-5 sm:p-7"><div className="flex items-start justify-between gap-4"><div><span className={`office-large-icon ${selected.accent}`}>{selected.icon}</span><p className="mt-5 text-[11px] font-medium tracking-[0.14em] text-white/35">المساحة الحالية</p><h2 className="mt-2 text-xl font-semibold">{selected.label}</h2><p className="mt-2 max-w-lg text-sm leading-6 text-white/50">{selected.description}. اكتب ما تحتاجه وسيتولى مِيزان تحليل الفكرة وبناء مخرج احترافي.</p></div><span className="hidden rounded-full border border-[#d8ad62]/30 px-3 py-1 text-[10px] text-[#e6c37e] sm:block">Fusion جاهز</span></div><textarea value={request} onChange={(event) => setRequest(event.target.value)} rows={5} placeholder={active === 'quotes' ? 'اكتب بيانات العميل واحتياجه هنا…' : `ما الذي تريد إنجازه في ${selected.label}؟`} className="office-textarea mt-7 w-full" /><div className="mt-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center"><p className="text-[11px] text-white/30">سيتم استخدام سياق المكتب تلقائيًا.</p><button onClick={generate} disabled={busy || !request.trim()} className="office-gold-btn">{busy ? 'يحلّل ويصيغ…' : `ابدأ ${selected.label}`} <span>↗</span></button></div></div><div className="grid gap-3 sm:grid-cols-3"><MiniCard title="سياق المكتب" value="مُجهّز" detail="الخدمات والموقع والعملة" /><MiniCard title="أسلوب العمل" value="استشاري" detail="تحليل ثم صياغة ثم مراجعة" /><MiniCard title="المخرجات" value="قابلة للتعديل" detail="نسخ جاهزة للمراجعة" /></div></> : <div className="office-result rounded-[26px] border border-white/10 p-5 sm:p-8"><div className="mb-6 flex items-center justify-between border-b border-white/10 pb-4"><div><p className="text-[10px] tracking-[0.15em] text-[#d8ad62]">MIZAN / GENERATED OUTPUT</p><h2 className="mt-2 text-xl font-semibold">{selected.label}</h2></div><button onClick={() => setResult('')} className="office-icon-btn">×</button></div><article className="office-prose whitespace-pre-wrap">{result}</article><div className="mt-8 flex flex-wrap gap-2"><button onClick={() => window.print()} className="office-outline-btn">طباعة / حفظ PDF</button><button onClick={() => setResult('')} className="office-gold-btn">إنشاء نسخة جديدة</button></div></div>}</div></section>
+    </div>
+  </main>;
 }
-
-function Field({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (value: string) => void; placeholder: string }) {
-  return <label className="mt-3 block text-xs font-medium text-ink"><span>{label}</span><input value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} className="mt-1.5 w-full rounded-xl border border-line bg-canvas-raised px-3 py-2.5 text-sm font-normal outline-none transition focus:border-brand-400" /></label>;
-}
-
-function TextField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (value: string) => void; placeholder: string }) {
-  return <label className="mt-3 block text-xs font-medium text-ink"><span>{label}</span><textarea value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} rows={3} className="mt-1.5 w-full resize-y rounded-xl border border-line bg-canvas-raised px-3 py-2.5 text-sm font-normal outline-none transition focus:border-brand-400" /></label>;
-}
+function MiniCard({ title, value, detail }: { title: string; value: string; detail: string }) { return <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4"><p className="text-[10px] text-white/35">{title}</p><p className="mt-2 text-sm font-semibold text-[#e6c37e]">{value}</p><p className="mt-1 text-[11px] text-white/35">{detail}</p></div>; }

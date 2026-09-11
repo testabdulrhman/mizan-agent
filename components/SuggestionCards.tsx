@@ -63,10 +63,18 @@ const TOOLS: ToolCard[] = [
   {
     icon: '◎',
     title: 'متصفح سحابي',
-    hint: 'افتح رابطًا عامًا واقرأ محتواه',
+    hint: 'لخّص صفحة عامة واقرأ محتواها',
     prompt: 'افتح هذا الرابط العام واقرأه ثم لخّص أهم النقاط: https://',
     status: 'جاهز',
     tone: 'bg-lime-50 text-lime-700',
+  },
+  {
+    icon: '{}',
+    title: 'اكتب كوداً',
+    hint: 'أنشئ حلاً برمجياً واضحاً بلغة Node.js',
+    prompt: 'اكتب لي حلاً برمجياً بلغة Node.js عن: ',
+    status: 'جاهز',
+    tone: 'bg-slate-100 text-slate-700',
   },
   {
     icon: '▱',

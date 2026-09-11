@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     if (!rateLimit(`office-quote:${user.id}`, 10, 60_000)) return fail('عدد كبير من المحاولات. انتظر قليلاً.', 429);
     const input = requestSchema.parse(await request.json());
     const cfg = env();
-    const prompt = `أنشئ عرض سعر احترافيًا بالعربية لهذا المكتب. لا تخترع أسعارًا أو مددًا؛ استخدم المعطيات كما هي، وضع [يحتاج تأكيد] عند النقص. افصل بوضوح بين نطاق العمل والمخرجات والاستثناءات والافتراضات. لا تقدم ضمانًا لنتيجة قانونية. الأسلوب المطلوب: ${styleNames[input.style]}.\n\nبيانات المكتب: ${OFFICE_CONTEXT}\nبيانات العميل: ${JSON.stringify(input, null, 2)}\n\nأخرج نصًا جاهزًا للمراجعة يتضمن: عنوان العرض، مقدمة، فهم الاحتياج، نطاق العمل، المراحل والمخرجات، المدة، الأتعاب، شروط الدفع، الاستثناءات، صلاحية العرض، والخطوة التالية.`;
+    const prompt = `أنت المحرر النهائي لعرض سعر مهني. أنشئ وثيقة عرض سعر عربية واحدة فقط، وليس تحليلًا قانونيًا أو إجابات متعددة. ممنوع تمامًا إظهار عبارة Panel responses أو أسماء النماذج أو المقارنة بين الإجابات أو قول «إليك الإجابة». ابدأ مباشرة بعنوان العرض وانتهِ بقسم الاعتماد. أنشئ عرض سعر احترافيًا بالعربية لهذا المكتب. لا تخترع أسعارًا أو مددًا؛ استخدم المعطيات كما هي، وضع [يحتاج تأكيد] عند النقص. افصل بوضوح بين نطاق العمل والمخرجات والاستثناءات والافتراضات. لا تقدم ضمانًا لنتيجة قانونية. الأسلوب المطلوب: ${styleNames[input.style]}.\n\nبيانات المكتب: ${OFFICE_CONTEXT}\nبيانات العميل: ${JSON.stringify(input, null, 2)}\n\nأخرج نصًا جاهزًا للمراجعة يتضمن: عنوان العرض، مقدمة، فهم الاحتياج، نطاق العمل، المراحل والمخرجات، المدة، الأتعاب، شروط الدفع، الاستثناءات، صلاحية العرض، والخطوة التالية.`;
 
     if (!cfg.OPENROUTER_API_KEY) {
       return ok({ content: fallbackQuote(input), provider: 'draft', warning: 'لم يُضبط مفتاح OpenRouter بعد؛ هذه مسودة أولية.' });
@@ -41,12 +41,18 @@ export async function POST(request: Request) {
     });
     if (!response.ok) return fail(`تعذّر الاتصال بـ Fusion (${response.status}).`, 502);
     const data = (await response.json()) as { choices?: { message?: { content?: string } }[] };
-    const content = data.choices?.[0]?.message?.content?.trim();
+    let content = data.choices?.[0]?.message?.content?.trim();
     if (!content) return fail('أعاد Fusion نتيجة فارغة.', 502);
+    content = cleanFusionOutput(content);
     return ok({ content, provider: 'openrouter/fusion' });
   } catch (error) {
     return handleError(error);
   }
+}
+
+function cleanFusionOutput(content: string) {
+  const withoutPanelTitle = content.replace(/^\s*#+\s*Panel responses[\s\S]*?\n/i, '').trim();
+  return withoutPanelTitle.replace(/^###\s*~[^\n]+\n/gm, '').trim() || content;
 }
 
 function fallbackQuote(input: z.infer<typeof requestSchema>) {

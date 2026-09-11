@@ -163,3 +163,12 @@
 .office-result { background: linear-gradient(145deg,rgba(19,35,55,.96),rgba(9,20,35,.98)); }
 .office-prose { color: rgba(255,255,255,.76); font-size: 14px; line-height: 2; }
 @media print { .office-topbar, aside, .office-result > div:last-child { display: none !important; } .office-shell, .office-result { background: white !important; color: #111 !important; } .office-prose { color: #111 !important; } }
+.office-input { width: 100%; border: 1px solid rgba(255,255,255,.1); border-radius: 13px; background: rgba(4,12,23,.45); padding: 11px 12px; color: white; font-size: 12px; outline: none; }
+.office-input::placeholder { color: rgba(255,255,255,.3); }
+.office-input:focus { border-color: rgba(216,173,98,.65); }
+.office-prose .mizan-prose { color: rgba(255,255,255,.78); }
+.office-prose .mizan-prose h1, .office-prose .mizan-prose h2, .office-prose .mizan-prose h3 { color: #e6c37e; }
+.office-prose .mizan-prose strong { color: white; }
+.office-prose .mizan-prose blockquote { border-color: #d8ad62; background: rgba(216,173,98,.08); color: rgba(255,255,255,.65); }
+.office-prose .mizan-prose th { background: rgba(216,173,98,.12); color: #e6c37e; }
+.office-prose .mizan-prose td, .office-prose .mizan-prose th { border-color: rgba(255,255,255,.12); }

@@ -194,3 +194,30 @@
 .office-prose .mizan-prose td, .office-prose .mizan-prose th { border-color: #DCE4DA; }
 .office-shell .bg-white\/\[0\.035\] { background: #fff; border-color: #DCE4DA; }
 .office-shell .text-\[\#e6c37e\] { color: #A9612C; }
+
+/* تحسين التباين — ألوان رسمية أوضح وقابلة للقراءة */
+.office-shell { background: #F7FAF7 !important; color: #173A27 !important; }
+.office-topbar { background: rgba(255,255,255,.98) !important; border-color: #C9D8CC !important; }
+.office-shell .text-ink { color: #173A27 !important; }
+.office-shell .text-ink-muted { color: #4A5C50 !important; }
+.office-shell .text-ink-faint { color: #637269 !important; }
+.office-shell .border-white\/10 { border-color: #C9D8CC !important; }
+.office-shell .bg-white\/5 { background: #F0F5F0 !important; }
+.office-shell .bg-white\/\[0\.035\] { background: #FFFFFF !important; }
+.office-shell .bg-white\/\[0\.03\] { background: #FFFFFF !important; }
+.office-nav-item { color: #4A5C50 !important; }
+.office-nav-item:hover { background: #E8F0E9 !important; color: #173A27 !important; }
+.office-nav-item.is-active { border-color: #82A98A !important; background: #E8F0E9 !important; color: #173A27 !important; box-shadow: inset 3px 0 0 #2F6B43; }
+.office-hero-card, .office-result { border-color: #C9D8CC !important; box-shadow: 0 10px 30px rgba(33, 70, 43, .08); }
+.office-title { background: none; color: #173A27; -webkit-text-fill-color: #173A27; }
+.office-large-icon { border: 1px solid #C9D8CC; }
+.office-gold-btn { background: #1F5B38 !important; color: #FFFFFF !important; box-shadow: 0 4px 10px rgba(31,91,56,.18); }
+.office-gold-btn:hover { background: #17472B !important; }
+.office-outline-btn { border-color: #5C8B66 !important; color: #1F5B38 !important; background: #FFFFFF; }
+.office-input, .office-textarea { border-color: #B8CDBB !important; }
+.office-input:focus, .office-textarea:focus { border-color: #2F6B43 !important; box-shadow: 0 0 0 3px rgba(47,107,67,.15) !important; }
+.office-prose .mizan-prose { color: #263A2D !important; }
+.office-prose .mizan-prose h1, .office-prose .mizan-prose h2, .office-prose .mizan-prose h3 { color: #1F5B38 !important; }
+.office-prose .mizan-prose a { color: #1F5B38 !important; }
+.office-prose .mizan-prose blockquote { border-color: #B86B32 !important; background: #FFF4E8 !important; color: #4A5C50 !important; }
+.office-prose .mizan-prose th { background: #E8F0E9 !important; color: #1F5B38 !important; }

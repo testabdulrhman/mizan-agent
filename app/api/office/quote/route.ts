@@ -1,4 +1,5 @@
 import { requireUser } from '@/lib/auth';
+import { prisma } from '@/lib/db';
 import { env } from '@/lib/env';
 import { fail, handleError, ok, rateLimit } from '@/lib/http';
 import { z } from 'zod';
@@ -22,6 +23,21 @@ const OFFICE_CONTEXT = `شركة عبدالرحمن بن رضوان المشيق
 
 const styleNames = { formal: 'رسمي وقانوني', premium: 'فاخر واستشاري', brief: 'مختصر ومباشر' } as const;
 
+export async function GET() {
+  try {
+    const user = await requireUser();
+    const quotes = await prisma.quote.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: 'desc' },
+      take: 30,
+      select: { id: true, clientName: true, request: true, content: true, createdAt: true, budget: true, duration: true },
+    });
+    return ok({ quotes });
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const user = await requireUser();
@@ -31,7 +47,9 @@ export async function POST(request: Request) {
     const prompt = `أنت المحرر النهائي لعرض سعر مهني. أنشئ وثيقة عرض سعر عربية واحدة فقط، وليس تحليلًا قانونيًا أو إجابات متعددة. ممنوع تمامًا إظهار عبارة Panel responses أو أسماء النماذج أو المقارنة بين الإجابات أو قول «إليك الإجابة». ابدأ مباشرة بعنوان العرض وانتهِ بقسم الاعتماد. أنشئ عرض سعر احترافيًا بالعربية لهذا المكتب. لا تخترع أسعارًا أو مددًا؛ استخدم المعطيات كما هي، وضع [يحتاج تأكيد] عند النقص. افصل بوضوح بين نطاق العمل والمخرجات والاستثناءات والافتراضات. لا تقدم ضمانًا لنتيجة قانونية. الأسلوب المطلوب: ${styleNames[input.style]}.\n\nبيانات المكتب: ${OFFICE_CONTEXT}\nبيانات العميل: ${JSON.stringify(input, null, 2)}\n\nأخرج نصًا جاهزًا للمراجعة يتضمن: عنوان العرض، مقدمة، فهم الاحتياج، نطاق العمل، المراحل والمخرجات، المدة، الأتعاب، شروط الدفع، الاستثناءات، صلاحية العرض، والخطوة التالية.`;
 
     if (!cfg.OPENROUTER_API_KEY) {
-      return ok({ content: fallbackQuote(input), provider: 'draft', warning: 'لم يُضبط مفتاح OpenRouter بعد؛ هذه مسودة أولية.' });
+      const content = fallbackQuote(input);
+      const quote = await saveQuote(user.id, input, content);
+      return ok({ content, quote, provider: 'draft', warning: 'لم يُضبط مفتاح OpenRouter بعد؛ هذه مسودة أولية.' });
     }
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -44,10 +62,26 @@ export async function POST(request: Request) {
     let content = data.choices?.[0]?.message?.content?.trim();
     if (!content) return fail('أعاد Fusion نتيجة فارغة.', 502);
     content = cleanFusionOutput(content);
-    return ok({ content, provider: 'openrouter/fusion' });
+    const quote = await saveQuote(user.id, input, content);
+    return ok({ content, quote, provider: 'openrouter/fusion' });
   } catch (error) {
     return handleError(error);
   }
+}
+
+async function saveQuote(userId: string, input: z.infer<typeof requestSchema>, content: string) {
+  return prisma.quote.create({
+    data: {
+      userId,
+      clientName: input.clientName,
+      request: input.request,
+      style: input.style,
+      duration: input.duration || null,
+      budget: input.budget || null,
+      content,
+    },
+    select: { id: true, clientName: true, createdAt: true },
+  });
 }
 
 function cleanFusionOutput(content: string) {

@@ -221,3 +221,15 @@
 .office-prose .mizan-prose a { color: #1F5B38 !important; }
 .office-prose .mizan-prose blockquote { border-color: #B86B32 !important; background: #FFF4E8 !important; color: #4A5C50 !important; }
 .office-prose .mizan-prose th { background: #E8F0E9 !important; color: #1F5B38 !important; }
+
+.office-paper { max-width: 920px; margin-inline: auto; background: #fff !important; }
+.office-document-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; border-bottom: 2px solid #1F5B38; padding-bottom: 18px; margin-bottom: 16px; }
+.office-document-kicker { color: #173A27; font-size: 15px; font-weight: 800; }
+.office-document-subtitle { color: #4A5C50; font-size: 11px; margin-top: 4px; }
+.office-document-meta { text-align: left; color: #173A27; }
+.office-document-meta span { display: block; color: #1F5B38; font-size: 20px; font-weight: 800; }
+.office-document-meta small { display: block; color: #637269; font-size: 10px; margin-top: 5px; }
+.office-document-recipient { background: #F1F6F1; border: 1px solid #C9D8CC; border-radius: 8px; padding: 10px 14px; color: #4A5C50; font-size: 12px; margin-bottom: 18px; }
+.office-document-recipient strong { color: #173A27; }
+.office-paper .mizan-prose h1, .office-paper .mizan-prose h2 { border-bottom: 1px solid #DCE4DA; padding-bottom: 6px; }
+@media print { .office-paper { border: 0 !important; box-shadow: none !important; border-radius: 0 !important; padding: 16mm !important; max-width: none !important; } .office-document-head { margin-bottom: 12px; } .office-document-recipient { background: #F1F6F1 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }

@@ -1,0 +1,50 @@
+# تشغيل محلي كامل: قاعدة بيانات + التطبيق.
+#
+# ملاحظة أمنية بخصوص Sandbox:
+# تشغيل كود المستخدم يحتاج محرك حاويات. تمرير مقبس Docker إلى حاوية التطبيق
+# يعادل منحها صلاحيات الجذر على المضيف، لذلك SANDBOX_ENABLED=false هنا افتراضياً.
+# الخياران الموصى بهما:
+#   1) شغّل التطبيق على المضيف مباشرة (npm run dev) مع Docker متاحاً.
+#   2) استخدم وسيط مقبس مقيّد (docker-socket-proxy) يسمح بـ containers/create فقط.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mizan-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mizan
+      POSTGRES_PASSWORD: mizan_dev_password
+      POSTGRES_DB: mizan
+    ports:
+      - '5432:5432'
+    volumes:
+      - mizan-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U mizan -d mizan']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: mizan-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://mizan:mizan_dev_password@db:5432/mizan?schema=public
+      AUTH_SECRET: ${AUTH_SECRET:?ضع AUTH_SECRET في ملف .env}
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-5}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      SANDBOX_ENABLED: 'false'
+      PLAYWRIGHT_ENABLED: 'false'
+      NODE_ENV: production
+    ports:
+      - '3000:3000'
+
+volumes:
+  mizan-db-data:

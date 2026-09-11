@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* خط النظام العربي: لا تحميل خارجي حتى يعمل البناء بلا إنترنت. */
+    --font-app:
+      'SF Arabic', 'Segoe UI', 'Noto Kufi Arabic', 'Noto Naskh Arabic', 'Tahoma', system-ui,
+      -apple-system, sans-serif;
+    --composer-height: 96px;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink antialiased;
+    font-family: var(--font-app);
+    /* يمنع القفز عند ظهور لوحة مفاتيح الجوال */
+    overscroll-behavior-y: none;
+  }
+
+  /* أرقام لاتينية داخل الأكواد حتى لا تُقلب في RTL */
+  code,
+  pre,
+  kbd {
+    font-family: theme('fontFamily.mono');
+    direction: ltr;
+    unicode-bidi: embed;
+  }
+
+  ::selection {
+    @apply bg-brand-100 text-brand-800;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  textarea:focus-visible,
+  input:focus-visible {
+    @apply outline-none ring-2 ring-brand-400 ring-offset-2 ring-offset-canvas;
+  }
+}
+
+@layer components {
+  .mizan-card {
+    @apply rounded-2xl border border-line bg-canvas-raised shadow-card;
+  }
+
+  .mizan-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .mizan-btn-primary {
+    @apply mizan-btn bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700;
+  }
+
+  .mizan-btn-ghost {
+    @apply mizan-btn border border-line bg-canvas-raised text-ink-muted hover:bg-canvas-soft hover:text-ink;
+  }
+
+  .mizan-chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-canvas-soft px-2 py-0.5 text-[11px] font-medium text-ink-muted;
+  }
+
+  /* تنسيق مخرجات Markdown */
+  .mizan-prose {
+    @apply text-[15px] leading-[1.85] text-ink;
+  }
+  .mizan-prose > * + * {
+    @apply mt-3;
+  }
+  .mizan-prose h1 {
+    @apply mt-5 text-lg font-bold text-ink;
+  }
+  .mizan-prose h2 {
+    @apply mt-5 text-base font-bold text-ink;
+  }
+  .mizan-prose h3 {
+    @apply mt-4 text-[15px] font-bold text-ink;
+  }
+  .mizan-prose p {
+    @apply break-words;
+  }
+  .mizan-prose ul {
+    @apply list-disc space-y-1 ps-5;
+  }
+  .mizan-prose ol {
+    @apply list-decimal space-y-1 ps-5;
+  }
+  .mizan-prose a {
+    @apply break-all text-brand-600 underline underline-offset-4 hover:text-brand-700;
+  }
+  .mizan-prose blockquote {
+    @apply rounded-xl border-s-4 border-accent-300 bg-accent-100/50 px-3 py-2 text-[14px] text-ink-muted;
+  }
+  .mizan-prose blockquote p {
+    @apply m-0;
+  }
+  .mizan-prose :not(pre) > code {
+    @apply rounded-md bg-canvas-soft px-1.5 py-0.5 text-[13px] text-brand-700;
+  }
+  .mizan-prose hr {
+    @apply my-4 border-line;
+  }
+  .mizan-prose table {
+    @apply w-full border-collapse overflow-hidden rounded-xl text-[13px];
+  }
+  .mizan-prose th,
+  .mizan-prose td {
+    @apply border border-line px-2 py-1.5 text-start align-top;
+  }
+  .mizan-prose th {
+    @apply bg-canvas-soft font-semibold;
+  }
+  .mizan-table-wrap {
+    @apply -mx-1 overflow-x-auto px-1;
+  }
+}
+
+/* شريط تمرير رفيع على سطح المكتب */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-line-strong;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

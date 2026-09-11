@@ -172,3 +172,25 @@
 .office-prose .mizan-prose blockquote { border-color: #d8ad62; background: rgba(216,173,98,.08); color: rgba(255,255,255,.65); }
 .office-prose .mizan-prose th { background: rgba(216,173,98,.12); color: #e6c37e; }
 .office-prose .mizan-prose td, .office-prose .mizan-prose th { border-color: rgba(255,255,255,.12); }
+
+/* توحيد إدارة المكتب مع الهوية الرسمية للصفحة العامة */
+.office-shell { background: #F3F6F2 !important; color: #1B2420 !important; }
+.office-topbar { background: rgba(255,255,255,.94) !important; border-color: #DCE4DA !important; }
+.office-mark { background: #2F6B43; border-color: #2F6B43; color: white; }
+.office-nav-item { color: #5A6B62; }
+.office-nav-item:hover { background: #EAF0E8; color: #1B2420; }
+.office-nav-item.is-active { border-color: #AAC7AE; background: linear-gradient(100deg,#EDF3EE,#fff); color: #1B2420; }
+.office-hero-card, .office-result { background: #fff !important; border-color: #DCE4DA !important; box-shadow: 0 8px 28px rgba(27,36,32,.08); }
+.office-textarea, .office-input { background: #fff; color: #1B2420; border-color: #DCE4DA; }
+.office-textarea::placeholder, .office-input::placeholder { color: #8C9A92; }
+.office-textarea:focus, .office-input:focus { border-color: #548C5F; box-shadow: 0 0 0 3px rgba(84,140,95,.12); }
+.office-gold-btn { background: #2F6B43; color: white; }
+.office-outline-btn { border-color: #AAC7AE; color: #265737; }
+.office-prose .mizan-prose, .office-prose { color: #1B2420; }
+.office-prose .mizan-prose h1, .office-prose .mizan-prose h2, .office-prose .mizan-prose h3 { color: #265737; }
+.office-prose .mizan-prose strong { color: #1B2420; }
+.office-prose .mizan-prose blockquote { border-color: #C97B3C; background: #FBEBDC; color: #5A6B62; }
+.office-prose .mizan-prose th { background: #EDF3EE; color: #265737; }
+.office-prose .mizan-prose td, .office-prose .mizan-prose th { border-color: #DCE4DA; }
+.office-shell .bg-white\/\[0\.035\] { background: #fff; border-color: #DCE4DA; }
+.office-shell .text-\[\#e6c37e\] { color: #A9612C; }

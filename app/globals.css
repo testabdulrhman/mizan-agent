@@ -296,3 +296,20 @@
   .office-project-result .office-prose th,.office-project-result .office-prose td { border:1px solid #cbd8cd !important; padding:7px 8px !important; }
   .office-project-result .office-prose tr { break-inside:avoid; }
 }
+
+/* Create workspace — مساحة إنشاء مستقلة مستوحاة من أدوات التصميم الحديثة */
+.office-create-templates { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:0 auto 18px; max-width:700px; }
+.office-create-templates button { min-height:92px; padding:13px; text-align:right; border:1px solid #dce7dd; border-radius:12px; background:#fbfdfb; color:#234b31; transition:.18s ease; }
+.office-create-templates button:hover { border-color:#78a583; background:#f1f8f2; transform:translateY(-2px); }
+.office-create-templates span { display:block; color:#b2863e; font-size:18px; margin-bottom:8px; }
+.office-create-templates b { display:block; font-size:12px; }
+.office-create-templates small { display:block; color:#7b8c80; font-size:10px; margin-top:5px; }
+.office-create-workspace { max-width:1100px; background:#f3f5f2; border-color:#d7e1d7; }
+.office-create-workspace .office-document-canvas { max-width:780px; margin:0 auto; padding:38px 46px; background:#fff; border:1px solid #e2e7e1; box-shadow:0 14px 35px rgba(31,62,39,.1); min-height:700px; }
+.office-create-workspace .office-prose { font-family:Arial,Tahoma,sans-serif; color:#26382c; font-size:13px; line-height:2; }
+.office-create-workspace .office-prose h1 { font-family:Georgia,serif; font-size:28px; color:#172d20; letter-spacing:-.3px; }
+.office-create-workspace .office-prose h2 { color:#28613c; font-size:16px; border-bottom:1px solid #e1e9e1; padding-bottom:7px; margin-top:24px; }
+.office-create-workspace .office-prose table { width:100%; border-collapse:collapse; font-size:11px; }
+.office-create-workspace .office-prose th { background:#173e2a; color:#fff; padding:8px; }
+.office-create-workspace .office-prose td { border:1px solid #dce5dc; padding:8px; }
+@media (max-width:720px) { .office-create-templates { grid-template-columns:1fr; } .office-create-workspace .office-document-canvas { padding:22px 16px; min-height:500px; } }
